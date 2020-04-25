@@ -1,0 +1,43 @@
+---
+resources:
+  Resources:
+    EventBucket:
+      Type: 'AWS::S3::Bucket'
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.bucket}
+    CognitoUserPool:
+      Type: 'AWS::Cognito:UserPool'
+      Properties:
+        UserPoolName: ${self:custom.cognito_userpool}
+    # CloudFormation limitation for this requirement is being unable to create a Resource Server to manage scopes
+    CognitoUserPoolClientSettings:
+      Type: 'Custom::CognitoUserPoolClientSettings'
+      Properties:
+        ServiceToken: !GetAtt CloudFormationCognitoUserPoolClientSettings.Arn
+        UserPoolId: !Ref CognitoUserPool
+        UserPoolClientId: !Ref CognitoUserPoolClient
+        SupportedIdentityProviders:
+          - COGNITO
+        #CallbackURL:
+        #LogoutURL:
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthFlows:
+          - code
+        AllowedOAuthScopes:
+          - openid
+    CognitoUserPoolDomain:
+      Type: 'Custom::CognitoUserPoolDomain'
+      Properties:
+        ServiceToken: !GetAtt CloudFormationCognitoUserPoolDomain.Arn
+        UserPoolId: !Ref CognitoUserPool
+        Domain: ${self:custom.prefix}-domain
+    CognitoUserPoolClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: ${self:custom.cognito_userpool_client}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - CUSTOM_AUTH_FLOW_ONLY # for oauth client credentials flow
+        GenerateSecret: true

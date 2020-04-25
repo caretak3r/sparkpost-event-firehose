@@ -1,0 +1,63 @@
+{
+  "body": "[\n  {\n    \"msys\": {\n      \"message_event\": {\n        \"ab_test_id\": \"password-reset\",\n        \"ab_test_version\": \"1\",\n        \"campaign_id\": \"Example Campaign Name\",\n        \"click_tracking\": true,\n        \"customer_id\": \"1\",\n        \"delv_method\": \"esmtp\",\n        \"device_token\": \"45c19189783f867973f6e6a5cca60061ffe4fa77c547150563a1192fa9847f8a\",\n        \"event_id\": \"92356927693813856\",\n        \"friendly_from\": \"sender@example.com\",\n        \"initial_pixel\": true,\n        \"injection_time\": \"2016-04-18T14:25:07.000Z\",\n        \"ip_address\": \"127.0.0.1\",\n        \"ip_pool\": \"Example-Ip-Pool\",\n        \"message_id\": \"000443ee14578172be22\",\n        \"msg_from\": \"sender@example.com\",\n        \"msg_size\": \"1337\",\n        \"num_retries\": \"2\",\n        \"open_tracking\": true,\n        \"queue_time\": \"12\",\n        \"rcpt_meta\": {\n          \"customKey\": \"customValue\"\n        },\n        \"rcpt_tags\": [\n          \"male\",\n          \"US\"\n        ],\n        \"rcpt_to\": \"recipient@example.com\",\n        \"raw_rcpt_to\": \"recipient@example.com\",\n        \"rcpt_type\": \"cc\",\n        \"recv_method\": \"esmtp\",\n        \"routing_domain\": \"example.com\",\n        \"sending_ip\": \"127.0.0.1\",\n        \"subaccount_id\": \"101\",\n        \"subject\": \"Summer deals are here!\",\n        \"sms_coding\": \"ASCII\",\n        \"sms_dst\": \"7876712656\",\n        \"sms_dst_npi\": \"E164\",\n        \"sms_dst_ton\": \"International\",\n        \"sms_remoteids\": [\n          \"0000\",\n          \"0001\",\n          \"0002\",\n          \"0003\",\n          \"0004\"\n        ],\n        \"sms_segments\": 5,\n        \"sms_src\": \"1234\",\n        \"sms_src_npi\": \"E164\",\n        \"sms_src_ton\": \"Unknown\",\n        \"template_id\": \"templ-1234\",\n        \"template_version\": \"1\",\n        \"timestamp\": \"1460989507\",\n        \"transactional\": \"1\",\n        \"transmission_id\": \"65832150921904138\",\n        \"type\": \"delivery\"\n      }\n    }\n  }\n]",
+  "resource": "/{proxy+}",
+  "path": "/store_events",
+  "httpMethod": "POST",
+  "isBase64Encoded": true,
+  "queryStringParameters": {
+    "foo": "bar"
+  },
+  "pathParameters": {
+    "proxy": "/path/to/resource"
+  },
+  "stageVariables": {
+    "baz": "qux"
+  },
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate, sdch",
+    "Accept-Language": "en-US,en;q=0.8",
+    "Cache-Control": "max-age=0",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "true",
+    "CloudFront-Is-Mobile-Viewer": "false",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "US",
+    "Host": "1234567890.execute-api.us-east-1.amazonaws.com",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Custom User Agent String",
+    "Via": "1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "cDehVQoZnx43VYQb9j2-nvCh-9z396Uhbp027Y2JvkCPNLmGJHqlaA==",
+    "X-Forwarded-For": "127.0.0.1, 127.0.0.2",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https",
+    "X-MessageSystems-Batch-ID": "77c2b630-d712-11e4-9642-efc2723b99d2"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "123456",
+    "stage": "prod",
+    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+    "requestTime": "09/Apr/2015:12:34:56 +0000",
+    "requestTimeEpoch": 1428582896000,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "accessKey": null,
+      "sourceIp": "127.0.0.1",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "path": "/prod/path/to/resource",
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "POST",
+    "apiId": "1234567890",
+    "protocol": "HTTP/1.1"
+  }
+}

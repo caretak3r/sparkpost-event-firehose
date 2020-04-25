@@ -1,0 +1,144 @@
+---
+#
+# __author__ = ""
+####################################################################################################
+
+service: postmaster
+
+####################################################################################################
+
+plugins:
+  - serverless-python-requirements
+
+####################################################################################################
+
+package:
+  exclude:
+    - .git/**
+    - .idea/**
+    - node_modules/**
+    - .serverless/**
+    - env/**
+    - tests/**
+    - .Python*
+    - bin/**
+    - include/**
+    - .gitignore
+    - lib/**
+
+####################################################################################################
+
+custom:
+  profile: ${opt:profile, 'chamber-stg-aws'} # if you have an aws profile
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'stg'}
+  prefix: ${self:custom.stage}-${self:service}
+  bucket: ${opt:bucket, 'stg-sparkpost-message-event-collector'}
+  bucket_arn: arn:aws:s3:::${self:custom.bucket}/* # bucket and key:objects in the bucket
+  cognito_userpool: ${self:custom.prefix}UserPool
+  cognito_userpool_client: ${self:custom.prefix}UserPoolClient
+  pythonRequirements: # from serverless-python-requirement plugin
+    dockerizePip: true # build off of the aws lambda python3.7 Docker container
+    usePipenv: true # use included pipenv or disable to use requirements.txt
+
+####################################################################################################
+
+provider:
+  name: aws
+  deploymentBucket:
+    name: ${self:custom.bucket}
+  runtime: python3.7
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  profile: ${self:custom.profile}
+  memorySize: 1024
+  timeout: 30
+  versionFunctions: false
+  environment:
+    BUCKET: ${self:custom.bucket}
+    REGION: ${self:custom.region}
+    DEBUG: '*'
+  iamRoleStatements:
+    - Action:
+        - "s3:ListBucket"
+        - "s3:PutObject"
+      Effect: Allow
+      Resource: ${self:custom.bucket_arn}
+
+####################################################################################################
+
+functions:
+  store_events:
+    description: Store json message events into an S3 bucket
+    handler: app/store_events.handler
+    events:
+      - http:
+          path: app/store_events
+          method: post
+          private: true
+          cors: true
+          authorizer:
+            name: auth
+            type: request
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+  auth:
+    description: Authorizer function
+    handler: app/auth.handler
+    environment:
+      USERPOOLID: ${self:custom.prefix}UserPool
+      CLIENTID: ${self:custom.prefix}UserPoolClient
+
+####################################################################################################
+
+# todo: add tags to all resources
+#
+resources:
+  Resources:
+
+    EventBucket:
+      Type: 'AWS::S3::Bucket'
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:custom.bucket}
+
+    CognitoUserPool:
+      Type: 'AWS::Cognito::UserPool'
+      Properties:
+        UserPoolName: ${self:custom.cognito_userpool}
+
+    CognitoUserPoolClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: ${self:custom.cognito_userpool_client}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - USER_PASSWORD_AUTH
+        GenerateSecret: true
+
+  Outputs:
+
+    EventBucket:
+      Description: S3 bucket to store message events in
+      Value:
+        Ref: EventBucket
+      Export:
+        Name: ${self:custom.bucket}
+
+    UserPoolId:
+      Description: A cognito user pool
+      Value:
+        Ref: CognitoUserPool
+      Export:
+        Name: ${self:custom.cognito_userpool}
+
+    UserPoolClientId:
+      Description: A cognito application client associated to a user pool
+      Value:
+        Ref: CognitoUserPoolClient
+      Export:
+        Name: ${self:custom.cognito_userpool_client}
+
+
+####################################################################################################
